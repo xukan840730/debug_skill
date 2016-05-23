@@ -1,0 +1,13 @@
+
+date: 05-23-2016
+proj: uncharted4
+issue: continous screen capture fails, the output picture seems randomly has 0 bytes.
+debug: 
+	1. it's weird that OpenFile func fails, but there's a file created on disc with 0 bytes.
+	2. has to dig into low level openFile func, it returns bad-path.
+	3. use hardware breakpoint to track down FileOp's m_err changed.
+	4. figured out that low level sceKernelOpen is good, however it calls file server stat func with a path name.
+	5. suspected that file server cache is not update to date once file is created.
+fix: use nativeFHStat(hFile) instead of nativeStat(path) fixes it.
+
+
